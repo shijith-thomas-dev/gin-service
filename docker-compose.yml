@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+    db:
+        image: postgres
+        restart: always
+        environment:
+          - POSTGRES_USER=user
+          - POSTGRES_PASSWORD=userP
+          - POSTGRES_DB=userDB
+        logging:
+          options:
+            max-size: 10m
+            max-file: "3"
+        ports:
+          - '5438:5432'
+        volumes: 
+          - data:/var/lib/postgresql/data
+    app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      restart: on-failure
+      depends_on:
+        - db
+      links:
+        - db
+      networks:
+        - default
+      ports:
+        - '8000:8000'
+      volumes:
+        - .:/build
+volumes:
+  data:
+    
